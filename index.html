@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vodafone Idea — Investor Dashboard</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --color-background-primary: #ffffff;
+      --color-background-secondary: #f5f5f5;
+      --color-text-primary: #1a1a1a;
+      --color-text-secondary: #555555;
+      --color-text-tertiary: #888888;
+      --color-border-secondary: #dddddd;
+      --color-border-tertiary: #e8e8e8;
+    }
+    body { font-family: var(--font-sans); background: #f0f0f0; min-height: 100vh; }
+    .dash-wrapper { max-width: 1100px; margin: 0 auto; padding: 16px; }
+
+    *{box-sizing:border-box}
+    .dash{padding:0 0 2rem}
+    .page-header{background:var(--color-background-secondary);border-bottom:2px solid #C41230;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .ph-left{display:flex;align-items:center;gap:12px}
+    .vi-logo{width:28px;height:28px;background:#C41230;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#fff;flex-shrink:0}
+    .page-title{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+    .page-sub{font-size:11px;color:var(--color-text-tertiary)}
+    .page-tab-row{display:flex;gap:6px;margin-bottom:14px;padding:0 2px}
+    .tab{font-size:11px;padding:4px 12px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:pointer;font-weight:500}
+    .tab.active{background:#C41230;color:#fff;border-color:#C41230}
+    .slicer-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+    .sl{font-size:10px;padding:3px 10px;border-radius:20px;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:pointer}
+    .sl.on{background:#1a3a6b;color:#fff;border-color:#1a3a6b}
+    .kpi-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+    .kpi{background:var(--color-background-secondary);border-radius:8px;padding:10px 12px}
+    .kpi-lbl{font-size:10px;color:var(--color-text-tertiary);margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em}
+    .kpi-val{font-size:20px;font-weight:500;color:var(--color-text-primary);line-height:1.1}
+    .kpi-delta{font-size:10px;margin-top:3px}
+    .up{color:#1D9E75}.dn{color:#E24B4A}.na{color:var(--color-text-secondary)}
+    .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:12px}
+    .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:12px}
+    .grid21{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:12px}
+    .card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:12px}
+    .ct{font-size:11px;font-weight:500;color:var(--color-text-primary);margin-bottom:1px}
+    .cs{font-size:10px;color:var(--color-text-tertiary);margin-bottom:7px}
+    .leg{display:flex;gap:12px;flex-wrap:wrap;font-size:10px;color:var(--color-text-secondary);margin-bottom:5px}
+    .ld{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:3px;vertical-align:middle}
+    .ann{font-size:9px;color:var(--color-text-tertiary);margin-top:5px;font-style:italic}
+    .page{display:none}.page.active{display:block}
+    .event-band{background:var(--color-background-secondary);border-left:3px solid #C41230;padding:6px 10px;margin-bottom:12px;border-radius:0 6px 6px 0}
+    .ev-title{font-size:10px;font-weight:500;color:#C41230}
+    .ev-list{display:flex;gap:16px;flex-wrap:wrap;margin-top:3px}
+    .ev-item{font-size:9px;color:var(--color-text-secondary)}
+    .ev-q{font-weight:500;color:var(--color-text-primary)}
+
+    @media (max-width: 700px) {
+      .kpi-row { grid-template-columns: repeat(2, 1fr); }
+      .grid2, .grid3, .grid21 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="dash-wrapper">
+<div class="dash">
+
+<div class="page-tab-row">
+  <button class="tab active" onclick="showPage(0)">Page 1 — Financial performance</button>
+  <button class="tab" onclick="showPage(1)">Page 2 — Operations & network</button>
+</div>
+
+<div class="slicer-row">
+  <span style="font-size:10px;color:var(--color-text-tertiary)">Quarter filter:</span>
+  <span class="sl on" onclick="toggleQ(this,'all')">All quarters</span>
+  <span class="sl" onclick="toggleQ(this,'FY2025')">FY2025</span>
+  <span class="sl" onclick="toggleQ(this,'FY2026')">FY2026</span>
+</div>
+
+<!-- ===== PAGE 1 ===== -->
+<div class="page active" id="p0">
+
+<div class="page-header">
+  <div class="ph-left">
+    <div class="vi-logo">Vi</div>
+    <div>
+      <div class="page-title">Vodafone Idea — Financial performance</div>
+      <div class="page-sub">P&amp;L · Profitability · Loss trajectory · FY2025–FY2026 · All figures ₹ Cr</div>
+    </div>
+  </div>
+  <div style="font-size:10px;color:var(--color-text-tertiary);text-align:right">Last data: Q3 FY26<br>Source: Official quarterly reports</div>
+</div>
+
+<div class="kpi-row">
+  <div class="kpi">
+    <div class="kpi-lbl">Revenue — Q3 FY26</div>
+    <div class="kpi-val">₹11,323 Cr</div>
+    <div class="kpi-delta up">+7.7% vs Q1 FY25</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-lbl">EBITDA margin — Q3 FY26</div>
+    <div class="kpi-val">42.5%</div>
+    <div class="kpi-delta up">+2.5pp from 40.0%</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-lbl">Net loss — Q3 FY26</div>
+    <div class="kpi-val" style="color:#E24B4A">−₹5,286 Cr</div>
+    <div class="kpi-delta up">Best in 7 quarters</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-lbl">Cash EBITDA — Q3 FY26</div>
+    <div class="kpi-val">₹2,358 Cr</div>
+    <div class="kpi-delta up">+5.0% QoQ</div>
+  </div>
+</div>
+
+<div class="event-band">
+  <div class="ev-title">Key investor events</div>
+  <div class="ev-list">
+    <span class="ev-item"><span class="ev-q">Q4FY25</span> 5G launch Mumbai</span>
+    <span class="ev-item"><span class="ev-q">Q1FY26</span> Sub loss −90% QoQ; AST deal</span>
+    <span class="ev-item"><span class="ev-q">Q2FY26</span> 5G all 17 circles; AGR SC ruling</span>
+    <span class="ev-item"><span class="ev-q">Q3FY26</span> AGR frozen ₹87,695Cr; NCD ₹3,300Cr; CLAM ₹6,394Cr</span>
+  </div>
+</div>
+
+<div class="grid2">
+  <div class="card">
+    <div class="ct">Revenue vs EBITDA margin</div>
+    <div class="cs">Bars = Revenue ₹ Cr · Line = EBITDA margin %</div>
+    <div class="leg"><span><span class="ld" style="background:#1a3a6b"></span>Revenue ₹ Cr</span><span><span class="ld" style="background:#EF9F27"></span>EBITDA margin %</span></div>
+    <div style="position:relative;width:100%;height:190px"><canvas id="c1" role="img" aria-label="Revenue bar chart with EBITDA margin line across 7 quarters"></canvas></div>
+    <div class="ann">Revenue +7.7% over 7 quarters; margin +2.5pp</div>
+  </div>
+  <div class="card">
+    <div class="ct">Net loss trajectory (PAT)</div>
+    <div class="cs">₹ Cr — bars shorten as losses narrow</div>
+    <div class="leg"><span><span class="ld" style="background:#E24B4A"></span>Heavy loss</span><span><span class="ld" style="background:#EF9F27"></span>Improving</span><span><span class="ld" style="background:#1D9E75"></span>Best</span></div>
+    <div style="position:relative;width:100%;height:190px"><canvas id="c2" role="img" aria-label="Net loss bar chart showing narrowing losses"></canvas></div>
+    <div class="ann">Loss narrowed 17.8% — AGR resolution accelerates path to breakeven</div>
+  </div>
+</div>
+
+<div class="grid3">
+  <div class="card">
+    <div class="ct">Gross margin vs OPEX ratio</div>
+    <div class="cs">Both as % revenue — widening gap = EBITDA lever</div>
+    <div class="leg"><span><span class="ld" style="background:#1D9E75"></span>Gross margin %</span><span><span class="ld" style="background:#E24B4A;opacity:.7"></span>OPEX ratio %</span></div>
+    <div style="position:relative;width:100%;height:150px"><canvas id="c3" role="img" aria-label="Gross margin vs OPEX ratio dual line"></canvas></div>
+    <div class="ann">Spread expansion drives EBITDA improvement</div>
+  </div>
+  <div class="card">
+    <div class="ct">Finance cost vs EBITDA</div>
+    <div class="cs">₹ Cr — finance cost must fall below EBITDA</div>
+    <div class="leg"><span><span class="ld" style="background:#1a3a6b"></span>EBITDA</span><span><span class="ld" style="background:#E24B4A"></span>Net finance cost</span></div>
+    <div style="position:relative;width:100%;height:150px"><canvas id="c4" role="img" aria-label="EBITDA vs net finance cost comparison"></canvas></div>
+    <div class="ann">Finance cost still above EBITDA — debt restructure critical</div>
+  </div>
+  <div class="card">
+    <div class="ct">Cash EBITDA trend</div>
+    <div class="cs">Pre-IndAS 116 ₹ Cr — true cash generation</div>
+    <div class="leg"><span><span class="ld" style="background:#534AB7"></span>Cash EBITDA ₹ Cr</span></div>
+    <div style="position:relative;width:100%;height:150px"><canvas id="c5" role="img" aria-label="Cash EBITDA trend"></canvas></div>
+    <div class="ann">Q3FY26 sequential +5% — improving cash generation</div>
+  </div>
+</div>
+
+</div>
+
+<!-- ===== PAGE 2 ===== -->
+<div class="page" id="p1">
+
+<div class="page-header">
+  <div class="ph-left">
+    <div class="vi-logo">Vi</div>
+    <div>
+      <div class="page-title">Vodafone Idea — Operations &amp; network</div>
+      <div class="page-sub">Subscribers · ARPU · Data · 4G/5G Coverage · FY2025–FY2026</div>
+    </div>
+  </div>
+  <div style="font-size:10px;color:var(--color-text-tertiary);text-align:right">Last data: Q3 FY26<br>Source: Official quarterly reports</div>
+</div>
+
+<div class="kpi-row">
+  <div class="kpi">
+    <div class="kpi-lbl">Subscribers — Q3 FY26</div>
+    <div class="kpi-val">192.9 Mn</div>
+    <div class="kpi-delta dn">−17.2Mn from peak</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-lbl">ARPU — Q3 FY26</div>
+    <div class="kpi-val">₹172</div>
+    <div class="kpi-delta up">+₹26 YoY (+17.8%)</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-lbl">4G/5G subs — Q3 FY26</div>
+    <div class="kpi-val">128.5 Mn</div>
+    <div class="kpi-delta up">66.6% of total base</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-lbl">4G coverage — Q3 FY26</div>
+    <div class="kpi-val">85.5%</div>
+    <div class="kpi-delta up">+8pp from 77.5%</div>
+  </div>
+</div>
+
+<div class="grid2">
+  <div class="card">
+    <div class="ct">Subscriber base: total vs 4G/5G</div>
+    <div class="cs">Millions — quality improving as base contracts</div>
+    <div class="leg"><span><span class="ld" style="background:#E24B4A"></span>Total subs (Mn)</span><span><span class="ld" style="background:#1D9E75"></span>4G/5G subs (Mn)</span></div>
+    <div style="position:relative;width:100%;height:185px"><canvas id="c6" role="img" aria-label="Total vs 4G subs trend"></canvas></div>
+    <div class="ann">4G core base stable — low-value 2G subs exiting; quality rising</div>
+  </div>
+  <div class="card">
+    <div class="ct">ARPU vs churn rate</div>
+    <div class="cs">₹ blended ARPU (bars) · churn % (line)</div>
+    <div class="leg"><span><span class="ld" style="background:#EF9F27"></span>ARPU ₹</span><span><span class="ld" style="background:#7F77DD"></span>Churn %</span></div>
+    <div style="position:relative;width:100%;height:185px"><canvas id="c7" role="img" aria-label="ARPU vs churn dual axis chart"></canvas></div>
+    <div class="ann">ARPU +17.8% with churn contained — tariff hike absorbed well</div>
+  </div>
+</div>
+
+<div class="grid3">
+  <div class="card">
+    <div class="ct">Data volume growth</div>
+    <div class="cs">Bn MB consumed per quarter</div>
+    <div class="leg"><span><span class="ld" style="background:#1a3a6b"></span>Data vol. Bn MB</span></div>
+    <div style="position:relative;width:100%;height:150px"><canvas id="c8" role="img" aria-label="Data volume trend"></canvas></div>
+    <div class="ann">+29% data growth — monetisation gap to Jio/Airtel remains</div>
+  </div>
+  <div class="card">
+    <div class="ct">4G pop. coverage &amp; broadband sites</div>
+    <div class="cs">Coverage % (line) · Sites '000 (bars)</div>
+    <div class="leg"><span><span class="ld" style="background:#1D9E75"></span>4G cov. %</span><span><span class="ld" style="background:#85B7EB"></span>BB sites '000</span></div>
+    <div style="position:relative;width:100%;height:150px"><canvas id="c9" role="img" aria-label="4G coverage and broadband sites trend"></canvas></div>
+    <div class="ann">Target 95% coverage in 17 circles — capex dependent</div>
+  </div>
+  <div class="card">
+    <div class="ct">5G city rollout + avg 4G data/user</div>
+    <div class="cs">5G cities (bars) · Avg 4G MB/user (line)</div>
+    <div class="leg"><span><span class="ld" style="background:#534AB7"></span>5G cities</span><span><span class="ld" style="background:#EF9F27"></span>Avg 4G MB</span></div>
+    <div style="position:relative;width:100%;height:150px"><canvas id="c10" role="img" aria-label="5G cities rollout and average 4G data usage"></canvas></div>
+    <div class="ann">5G in all 17 circles by Q2FY26; data engagement deepening</div>
+  </div>
+</div>
+
+</div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const QS = ['Q1\'25','Q2\'25','Q3\'25','Q4\'25','Q1\'26','Q2\'26','Q3\'26'];
+const REV   = [10508.3,10932.2,11117,11013.5,11022.5,11194.7,11323];
+const EBITDAM = [40.0,41.6,42.4,42.3,41.8,41.9,42.5];
+const PAT   = [6432.1,7175.9,6609,7166.1,6608.1,5524.2,5286];
+const PAT_C = ['#E24B4A','#E24B4A','#E24B4A','#E24B4A','#E24B4A','#EF9F27','#1D9E75'];
+const EBITDA= [4204.7,4549.8,4712,4659.7,4612.1,4685.1,4816];
+const NFC   = [5262.3,6313.6,5690,6256.5,5751.1,4682.5,5632];
+const CEBITDA=[2103.3,2323.9,2450,2320.7,2180.7,2245.9,2358];
+const SUBS  = [210.1,205,199.8,198.2,197.7,196.7,192.9];
+const S4G   = [126.7,125.9,126,126.4,127.4,127.8,128.5];
+const ARPU  = [146,156,163,164,165,167,172];
+const CHURN = [4.0,4.5,4.5,4.1,4.1,4.3,4.4];
+const DVOL  = [6111,5992,5859,6166,6748,7275,7559];
+const COV4G = [77.5,78.8,80.3,82.7,84.1,84.4,85.5];
+const BBSITES=[417.2,439.6,460.3,494.6,516.2,527.0,548.0];
+const CITIES5G=[0,0,0,1,22,29,43];
+const AVG4G  =[15961,15760,15534,16262,17744,18954,19676];
+const GMARGIN=[59.9,58.4,57.6,56.5,58.1,58.2,57.5];
+const OPEXR  =[60.0,58.4,57.6,57.7,58.2,58.1,57.5];
+
+const grid='rgba(120,118,110,0.1)';const tick='#888780';
+const base={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+  scales:{x:{ticks:{color:tick,font:{size:9}},grid:{color:grid}},
+          y:{ticks:{color:tick,font:{size:9}},grid:{color:grid}}}};
+
+function makeChart(id,cfg){new Chart(document.getElementById(id),cfg)}
+
+makeChart('c1',{type:'bar',data:{labels:QS,datasets:[
+  {type:'bar',data:REV,backgroundColor:'#1a3a6b',borderRadius:3,yAxisID:'y'},
+  {type:'line',data:EBITDAM,borderColor:'#EF9F27',borderWidth:2.5,pointBackgroundColor:'#EF9F27',pointRadius:3,tension:0.3,yAxisID:'y2'}
+]},options:{...base,scales:{x:{ticks:{color:tick,font:{size:9}},grid:{color:grid}},
+  y:{ticks:{color:tick,font:{size:9},callback:v=>'₹'+Math.round(v/1000)+'k'},grid:{color:grid}},
+  y2:{position:'right',ticks:{color:'#EF9F27',font:{size:9},callback:v=>v+'%'},grid:{display:false}}}}});
+
+makeChart('c2',{type:'bar',data:{labels:QS,datasets:[{data:PAT,backgroundColor:PAT_C,borderRadius:3}]},
+options:{...base,plugins:{legend:{display:false}},scales:{x:{ticks:{color:tick,font:{size:9}},grid:{color:grid}},
+  y:{reverse:true,ticks:{color:tick,font:{size:9},callback:v=>'−₹'+Math.round(v/1000)+'k'},grid:{color:grid}}}}});
+
+makeChart('c3',{type:'line',data:{labels:QS,datasets:[
+  {data:GMARGIN,borderColor:'#1D9E75',borderWidth:2,pointRadius:2,tension:0.3},
+  {data:OPEXR,borderColor:'#E24B4A',borderWidth:2,borderDash:[4,3],pointRadius:2,tension:0.3}
+]},options:{...base,scales:{x:{ticks:{color:tick,font:{size:9}},grid:{color:grid}},
+  y:{ticks:{color:tick,font:{size:9},callback:v=>v+'%'},grid:{color:grid}}}}});
+
+makeChart('c4',{type:'line',data:{labels:QS,datasets:[
+  {data:EBITDA,borderColor:'#1a3a6b',borderWidth:2,pointRadius:2,tension:0.3,fill:false},
+  {data:NFC,borderColor:'#E24B4A',borderWidth:2,borderDash:[4,3],pointRadius:2,tension:0.3,fill:false}
+]},options:{...base,scales:{x:{ticks:{color:tick,font:{size:9}},grid:{color:grid}},
+  y:{ticks:{color:tick,font:{size:9},callback:v=>'₹'+Math.round(v/1000)+'k'},grid:{color:grid}}}}});
+
+makeChart('c5',{type:'line',data:{labels:QS,datasets:[{data:CEBITDA,borderColor:'#534AB7',
+  borderWidth:2,pointRadius:3,pointBackgroundColor:'#534AB7',tension:0.3,
+  fill:{target:'origin',above:'rgba(83,74,183,0.08)'}}]},
+options:{...base,scales:{x:{ticks:{color:tick,font:{size:9}},grid:{color:grid}},
+  y:{ticks:{color:tick,font:{size:9},callback:v=>'₹'+v},grid:{color:grid}}}}});
+
+makeChart('c6',{type:'line',data:{labels:QS,datasets:[
+  {data:SUBS,borderColor:'#E24B4A',borderWidth:2,pointRadius:3,pointBackgroundColor:'#E24B4A',tension:0.3},
+  {data:S4G,borderColor:'#1D9E75',borderWidth:2,borderDash:[4,3],pointRadius:3,pointBackgroundColor:'#1D9E75',tension:0.3}
+]},options:{...base,scales:{x:{ticks:{color:tick,font:{size:9}},grid:{color:grid}},
+  y:{ticks:{color:tick,font:{size:9},callback:v=>v+'M'},grid:{color:grid}}}}});
+
+makeChart('c7',{data:{labels:QS,datasets:[
+  {type:'bar',data:ARPU,backgroundColor:'#EF9F27',borderRadius:3,yAxisID:'y'},
+  {type:'line',data:CHURN,borderColor:'#7F77DD',borderWidth:2,pointRadius:3,pointBackgroundColor:'#7F77DD',tension:0.3,yAxisID:'y2'}
+]},options:{...base,scales:{x:{ticks:{color:tick,font:{size:9}},grid:{color:grid}},
+  y:{ticks:{color:'#EF9F27',font:{size:9},callback:v=>'₹'+v},grid:{color:grid}},
+  y2:{position:'right',min:3.5,max:5,ticks:{color:'#7F77DD',font:{size:9},callback:v=>v+'%'},grid:{display:false}}}}});
+
+makeChart('c8',{type:'line',data:{labels:QS,datasets:[{data:DVOL,borderColor:'#1a3a6b',borderWidth:2,
+  pointRadius:3,pointBackgroundColor:'#1a3a6b',tension:0.3,
+  fill:{target:'origin',above:'rgba(26,58,107,0.1)'}}]},
+options:{...base,scales:{x:{ticks:{color:tick,font:{size:9}},grid:{color:grid}},
+  y:{ticks:{color:tick,font:{size:9},callback:v=>Math.round(v/1000)+'k'},grid:{color:grid}}}}});
+
+makeChart('c9',{data:{labels:QS,datasets:[
+  {type:'bar',data:BBSITES,backgroundColor:'#85B7EB',borderRadius:2,yAxisID:'y'},
+  {type:'line',data:COV4G,borderColor:'#1D9E75',borderWidth:2.5,pointRadius:3,pointBackgroundColor:'#1D9E75',tension:0.3,yAxisID:'y2'}
+]},options:{...base,scales:{x:{ticks:{color:tick,font:{size:9}},grid:{color:grid}},
+  y:{ticks:{color:'#85B7EB',font:{size:9},callback:v=>v+'k'},grid:{color:grid}},
+  y2:{position:'right',min:70,max:90,ticks:{color:'#1D9E75',font:{size:9},callback:v=>v+'%'},grid:{display:false}}}}});
+
+makeChart('c10',{data:{labels:QS,datasets:[
+  {type:'bar',data:CITIES5G,backgroundColor:'#534AB7',borderRadius:2,yAxisID:'y'},
+  {type:'line',data:AVG4G.map(v=>Math.round(v/1000*10)/10),borderColor:'#EF9F27',borderWidth:2,pointRadius:3,pointBackgroundColor:'#EF9F27',tension:0.3,yAxisID:'y2'}
+]},options:{...base,scales:{x:{ticks:{color:tick,font:{size:9}},grid:{color:grid}},
+  y:{ticks:{color:'#534AB7',font:{size:9},callback:v=>v+' cities'},grid:{color:grid}},
+  y2:{position:'right',ticks:{color:'#EF9F27',font:{size:9},callback:v=>v+'k MB'},grid:{display:false}}}}});
+
+function showPage(n){
+  document.querySelectorAll('.page').forEach((p,i)=>p.classList.toggle('active',i===n));
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===n));
+}
+function toggleQ(el,fy){
+  document.querySelectorAll('.sl').forEach(s=>s.classList.remove('on'));
+  el.classList.add('on');
+}
+</script>
+</body>
+</html>
